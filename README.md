@@ -1,2 +1,3 @@
-# Derivador-de-Gramatica
-Derivador de gramatica
+# Derivador de Gramatica
+
+Derivador de gramaticas simples.
