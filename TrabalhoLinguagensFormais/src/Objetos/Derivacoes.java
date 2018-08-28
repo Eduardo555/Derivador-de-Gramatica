@@ -3,9 +3,9 @@ package Objetos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -31,6 +31,9 @@ public class Derivacoes {
                 //pilha[i] = valores.getValue();
                 if(valores.getKey().equals("S")){
                     SentencaInicial = quebrarPipes(valores.getValue());
+                    if(SentencaInicial.isEmpty()){
+                        return;
+                    }
                     for(int i=0;i<SentencaInicial.length();i++)
                     {
                         try{
@@ -53,10 +56,13 @@ public class Derivacoes {
         // Recebe a pilha sempre com a sentenca inicial dentro.
         for(int i=0;i<pilha.size();i++)
         {
-            if(verificarTerminal(pilha.get(i)).equals(true))
+            if(verificarTerminal(pilha.get(i).charAt(0)))
             {
                 // Nao Terminal
                 String retorno = encontraSentecaNaoTerminal(pilha.get(i));
+                if(retorno.isEmpty()){
+                    continue;
+                }
                 // Precisa remover antes.
                 pilha.remove(i);
                 //for(int j=0;j<retorno.length();j++)
@@ -72,10 +78,13 @@ public class Derivacoes {
             else
             {
                 // Terminal - coloca na saida e remove da pilha
-                saida.add(pilha.get(i));
-                pilha.remove(i);
-                derivar(pilha);
+                if(!pilha.get(i).isEmpty()){
+                    saida.add(pilha.get(i));
+                    pilha.remove(i);
+                    derivar(pilha);
+                }
             }
+            return;
         }
     }
     
@@ -92,10 +101,15 @@ public class Derivacoes {
     }
     
     // Usado para verificar se e um terminal
-    private Boolean verificarTerminal(String valor)
+    private Boolean verificarTerminal(char valor)
     {
         // vai retornar true caso seja maiscula = terminal
-        return valor.toUpperCase().equals(valor);
+        if(!Character.isDigit(valor)){
+            return  Character.toString(valor).toUpperCase().equals(Character.toString(valor)); 
+        }
+        else{
+            return false;
+        }
     }
     
     // Usado para quebrar as pipes e posibilitar a escolha para derivacao.
@@ -118,9 +132,15 @@ public class Derivacoes {
             while(op.isEmpty() || !ehInteiro(op))
             {
                 op = JOptionPane.showInputDialog("Existe mais de uma opção para derivação, informe o numero correspondente:\n" + opcoesString);
+                if(op == null){
+                    return "";
+                }
             }
             if(ehInteiro(op))
             {
+                if(op == null || op.isEmpty()){
+                    return sentenca[0];
+                }
                 opcaoUsuario = Integer.parseInt(op);
             }
         }  
@@ -136,17 +156,20 @@ public class Derivacoes {
     {  
 	// cria um array de char  
         // char[] c = s.toCharArray();  
-        boolean d = true;  
+        boolean eInteiro = true;  
+        if(s == null || s.isEmpty()){
+            return eInteiro;
+        }
         for ( int i = 0; i < s.length(); i++ ) 
         { 
             // verifica se o char não é um dígito  
             if ( !Character.isDigit( s.charAt(i) ) ) 
             {  
-                d = false;  
+                eInteiro = false;  
                 break;  
             }  
         }  
-	return d;  
+	return eInteiro;  
     }
     
 }
